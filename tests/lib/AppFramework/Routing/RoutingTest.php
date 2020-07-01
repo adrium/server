@@ -420,7 +420,7 @@ class RoutingTest extends \Test\TestCase {
 		array $defaults=[]
 	) {
 		$route = $this->getMockBuilder(Route::class)
-			->onlyMethods(['method', 'action', 'requirements', 'defaults'])
+			->onlyMethods(['method', 'setDefault', 'requirements', 'defaults'])
 			->disableOriginalConstructor()
 			->getMock();
 		$route
@@ -431,8 +431,8 @@ class RoutingTest extends \Test\TestCase {
 
 		$route
 			->expects($this->once())
-			->method('action')
-			->with($this->equalTo(new RouteActionHandler($container, $controllerName, $actionName)))
+			->method('setDefault')
+			->with('caller', ['app1', $controllerName, $actionName])
 			->willReturn($route);
 
 		if (count($requirements) > 0) {
