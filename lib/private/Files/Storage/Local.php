@@ -467,9 +467,9 @@ class Local extends \OC\Files\Storage\Common {
 			$realPath = $realPath . '/';
 		}
 		\OCP\Util::writeLog('core', "Checking symlink: '$fullPath' -> '$realPath'", ILogger::DEBUG);
-		if ($fileExists && substr($fullPath, 0, strlen($realPath)) === $realPath) {
+		if ($fileExists && substr($fullPath, -2) !== '/.' && substr($fullPath, 0, strlen($realPath)) === $realPath) {
 			\OCP\Util::writeLog('core', "Cyclic symlinks are not allowed ('$fullPath' -> '$realPath')", ILogger::ERROR);
-		} else if (substr($realPath, 0, $this->dataDirLength) === $this->realDataDir) {
+		} elseif (substr($realPath, 0, $this->dataDirLength) === $this->realDataDir) {
 			return $fullPath;
 		} else {
 			\OCP\Util::writeLog('core', "Following symlinks is not allowed ('$fullPath' -> '$realPath' not inside '{$this->realDataDir}')", ILogger::ERROR);
