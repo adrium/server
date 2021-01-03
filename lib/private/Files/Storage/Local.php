@@ -454,7 +454,9 @@ class Local extends \OC\Files\Storage\Common {
 		}
 		$pathToResolve = $fullPath;
 		$realPath = realpath($pathToResolve);
+		$fileExists = true;
 		while ($realPath === false) { // for non existing files check the parent directory
+			$fileExists = false;
 			$currentPath = dirname($currentPath);
 			if ($currentPath === '' || $currentPath === '.') {
 				return $fullPath;
@@ -465,11 +467,14 @@ class Local extends \OC\Files\Storage\Common {
 			$realPath = $realPath . '/';
 		}
 		\OCP\Util::writeLog('core', "Checking symlink: '$fullPath' -> '$realPath'", ILogger::DEBUG);
-		if (substr($realPath, 0, $this->dataDirLength) === $this->realDataDir) {
+		if ($fileExists && substr($fullPath, 0, strlen($realPath)) === $realPath) {
+			\OCP\Util::writeLog('core', "Cyclic symlinks are not allowed ('$fullPath' -> '$realPath')", ILogger::ERROR);
+		} else if (substr($realPath, 0, $this->dataDirLength) === $this->realDataDir) {
 			return $fullPath;
+		} else {
+			\OCP\Util::writeLog('core', "Following symlinks is not allowed ('$fullPath' -> '$realPath' not inside '{$this->realDataDir}')", ILogger::ERROR);
 		}
 
-		\OCP\Util::writeLog('core', "Following symlinks is not allowed ('$fullPath' -> '$realPath' not inside '{$this->realDataDir}')", ILogger::ERROR);
 		throw new ForbiddenException('Following symlinks is not allowed', false);
 	}
 
