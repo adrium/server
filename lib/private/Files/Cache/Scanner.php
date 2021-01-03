@@ -418,6 +418,7 @@ class Scanner extends BasicEmitter implements IScanner {
 			$file = $fileMeta['name'];
 			$newChildNames[] = $file;
 			$child = $path ? $path . '/' . $file : $file;
+			\OCP\Util::writeLog(Scanner::class, "Scanning $child...", ILogger::DEBUG);
 			try {
 				$existingData = isset($existingChildren[$file]) ? $existingChildren[$file] : false;
 				$data = $this->scanFile($child, $reuse, $folderId, $existingData, $lock, $fileMeta);

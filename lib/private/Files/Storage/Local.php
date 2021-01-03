@@ -186,6 +186,7 @@ class Local extends \OC\Files\Storage\Common {
 			}
 		}
 
+
 		$data = [];
 		$data['mimetype'] = $isDir ? 'httpd/unix-directory' : \OC::$server->getMimeTypeDetector()->detectPath($path);
 		$data['mtime'] = $stat['mtime'];
@@ -456,6 +457,7 @@ class Local extends \OC\Files\Storage\Common {
 		if ($realPath) {
 			$realPath = $realPath . '/';
 		}
+		\OCP\Util::writeLog('core', "Checking symlink: '$fullPath' -> '$realPath'", ILogger::DEBUG);
 		if (substr($realPath, 0, $this->dataDirLength) === $this->realDataDir) {
 			return $fullPath;
 		}
